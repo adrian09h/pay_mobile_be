@@ -1,9 +1,15 @@
 const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
+const ApiError = require('../utils/ApiError');
 const { authService, userService, tokenService, emailService } = require('../services');
+const web3Controller = require('./web3.controller');
 
 const register = catchAsync(async (req, res) => {
-  const user = await userService.createUser(req.body);
+  const wallet = web3Controller.createWallet();
+  const newBody = req.body;
+  newBody.walletAddress = wallet.address;
+  newBody.walletKey = wallet.privateKey;
+  const user = await userService.createUser(newBody);
   const tokens = await tokenService.generateAuthTokens(user);
   res.status(httpStatus.CREATED).send({ user, tokens });
 });
@@ -41,7 +47,9 @@ const sendVerificationEmail = catchAsync(async (req, res) => {
   try {
     await emailService.sendVerificationEmail(req.user.email, verifyEmailToken);
     res.send({ success: true }).send();
-  } catch (error) { }
+  } catch (error) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Email verification failed');
+  }
 });
 
 const verifyEmail = catchAsync(async (req, res) => {
