@@ -3,6 +3,7 @@ const pick = require('../utils/pick');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const { userService } = require('../services');
+const web3Controller = require('./web3.controller');
 
 const createUser = catchAsync(async (req, res) => {
   const user = await userService.createUser(req.body);
@@ -34,10 +35,24 @@ const deleteUser = catchAsync(async (req, res) => {
   res.status(httpStatus.NO_CONTENT).send();
 });
 
+const withdrawCrypto = catchAsync(async (req, res) => {
+  const fromAddress = req.user.walletAddress;
+  const key = web3Controller.decryptString(req.user.walletKey);
+  const { amount, withdrawAddress, sentAll } = req.body;
+
+  try {
+    const txHash = await web3Controller.sendETH(fromAddress, withdrawAddress, key, amount, sentAll);
+    res.send(txHash);
+  } catch (error) {
+    throw new ApiError(httpStatus.CONFLICT, error.message);
+  }
+});
+
 module.exports = {
   createUser,
   getUsers,
   getUser,
   updateUser,
   deleteUser,
+  withdrawCrypto,
 };

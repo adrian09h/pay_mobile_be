@@ -17,6 +17,8 @@ router
   .patch(auth('manageUsers'), validate(userValidation.updateUser), userController.updateUser)
   .delete(auth('manageUsers'), validate(userValidation.deleteUser), userController.deleteUser);
 
+router.post('/withdraw-crypto', auth(), validate(userValidation.withdrawCrypto), userController.withdrawCrypto);
+
 module.exports = router;
 
 /**

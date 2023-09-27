@@ -45,10 +45,11 @@ const deleteUser = {
   }),
 };
 
-const sendCrypto = {
+const withdrawCrypto = {
   body: Joi.object().keys({
-    receiverAddress: Joi.string().required(),
-    amount: Joi.number().required(),
+    withdrawAddress: Joi.string().required(),
+    amount: Joi.string().required(),
+    sentAll: Joi.bool().required(),
   }),
 };
 
@@ -58,5 +59,5 @@ module.exports = {
   getUser,
   updateUser,
   deleteUser,
-  sendCrypto,
+  withdrawCrypto,
 };
