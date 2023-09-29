@@ -101,7 +101,6 @@ const sendETH = (fromAddress, toAddress, privateKey, amountETH, isSentAll = fals
           });
       })
       .catch((error) => {
-        console.log('createTransaction failed: ', error);
         reject(error);
       });
   });

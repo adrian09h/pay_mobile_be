@@ -4,34 +4,76 @@
 		"name": "string",
 		"email": "string",
 		"password": "hash string",
+		"birthday": "1111",
+		"gender": "F",
+		"address": {
+			"line1": "",
+			"line2": "",
+			"city": "",
+			"state": "",
+			"zipcode": "",
+			"country": ""
+		},
 		"isEmailVerified": "bool",
 		"ipAddresses": [],
-		"hdAddresses": [],
-		"isLockedByIPPolicy: "bool",
-		"isBlocked: "bool",
-		"credit": ""
+		"hdInfo": [],
+		"isViolatedByIPHDPolicy": "bool",
+		"isBlockedLogin": "bool",
+		"walletAddress": "string",
+		"walletKey": "string",
+		"walletFrozen": "bool",
+		"walletMinAmountKeep": "string"
 	},
-	"transaction": {
-		"_id": "string",
-		"user_id": "string",
-		"from_address: "string",
-		"to_address": "string",
-		"type": "deposit, withdraw, incoming, outcoming",
-		"status": "pending, completed"
+	// "transaction": {
+	// 	"_id": "string",
+	// 	"user_id": "string",
+	// 	"from_address: "string","to_address": "string","type": "deposit, withdraw, incoming, outcoming","status": "pending, completed"
+	// },
+	"order_template": {
+		"number": "1",
+		"type": "FOR_NORMAL, FOR_VIOLATED",
+		"amountsInUSD": [
+			"100",
+			"200"
+		],
+		"required_action": [
+			"ID_VERIFY, ADDRESS_VERIFY, TRY_MULTIPLE"
+		],
+		"freezeWalletAfter": "bool",
+		"shouldTryCount": 0,
+		"nextNumber": "2"
 	},
-	"level": {
-		"number": "1"
-		"amount_usd": "100",		
-		"credit_award": "1300" //1, 2, 3: amount * 13 // 4, 5, 6: 0,  7: amount * 15, 8: amount * , 9: 
-		"credit_required":"1300"
-	}
-	"user_oderder": {
+	"user_order": {
 		"_id": "string",
-		"user_id",
-		"level": "1"
-		"amount_usd": "100",
-		"amount_eth": "0.00001",
-		"status": "funded,
-		"credit_award": ""
+		"userId": "userId",
+		"order": {
+			"number": "1",
+			"type": "FOR_NORMAL, FOR_VIOLATED",
+			"amountsInUSD": [
+				"100",
+				"200"
+			],
+			"required_action": [
+				"ID_VERIFY, ADDRESS_VERIFY, TRY_MULTIPLE"
+			],
+			"minAmountKeep": "bool",
+			"nextNumber": "2"
+		},
+		"amountsInETH": [
+			"",
+			""
+		],
+		"status": "IDEAL, READY, SENT_TO_SYSTEM, COMPLETED",
+		"triedCount": 0
 	}
 }
+
+getAvailableOrder:
+	- If there is no user_order, 
+		--- if user is not violated, then get type normal order, sorting by number, then check required action completed
+		--- if user is violated IP, HD policy, then get type violated order, sorting by number,
+	- if there is user_order, then find nextNumber,
+		--- if nextNumber, then return the order chekcing requiredAction
+		
+
+updateOfferSent,

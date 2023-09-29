@@ -43,12 +43,45 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    ipAddresses: {
+      type: [String],
+      default: [],
+      private: true, // used by the toJSON plugin
+    },
+    hdInfo: {
+      type: [String],
+      default: [],
+      private: true, // used by the toJSON plugin
+    },
+    birthday: {
+      type: String,
+      default: '',
+    },
+    address: {
+      type: String,
+      default: '',
+    },
+    isViolatedByIPHDPolicy: {
+      type: Boolean,
+      default: false,
+      private: true,
+    },
+    isBlockedLogin: {
+      type: Boolean,
+      default: false,
+      private: true,
+    },
     walletAddress: {
       type: String,
     },
     walletKey: {
       type: String,
       private: true, // used by the toJSON plugin
+    },
+    walletFrozen: {
+      type: Boolean,
+      default: false,
+      private: true,
     },
   },
   {

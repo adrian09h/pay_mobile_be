@@ -50,19 +50,28 @@ cp .env.example .env
 
 ## Table of Contents
 
-- [Features](#features)
-- [Commands](#commands)
-- [Environment Variables](#environment-variables)
-- [Project Structure](#project-structure)
-- [API Documentation](#api-documentation)
-- [Error Handling](#error-handling)
-- [Validation](#validation)
-- [Authentication](#authentication)
-- [Authorization](#authorization)
-- [Logging](#logging)
-- [Custom Mongoose Plugins](#custom-mongoose-plugins)
-- [Linting](#linting)
-- [Contributing](#contributing)
+- [RESTful API Node Server Boilerplate](#restful-api-node-server-boilerplate)
+  - [Quick Start](#quick-start)
+  - [Manual Installation](#manual-installation)
+  - [Table of Contents](#table-of-contents)
+  - [Features](#features)
+  - [Commands](#commands)
+  - [Environment Variables](#environment-variables)
+  - [Project Structure](#project-structure)
+  - [API Documentation](#api-documentation)
+    - [API Endpoints](#api-endpoints)
+  - [Error Handling](#error-handling)
+  - [Validation](#validation)
+  - [Authentication](#authentication)
+  - [Authorization](#authorization)
+  - [Logging](#logging)
+  - [Custom Mongoose Plugins](#custom-mongoose-plugins)
+    - [toJSON](#tojson)
+    - [paginate](#paginate)
+  - [Linting](#linting)
+  - [Contributing](#contributing)
+  - [Inspirations](#inspirations)
+  - [License](#license)
 
 ## Features
 
@@ -438,3 +447,16 @@ Contributions are more than welcome! Please check out the [contributing guide](C
 ## License
 
 [MIT](LICENSE)
+
+
+Wei	1	1
+Kwei	1,000	10^3
+Mwei	1,000,000	10^6
+Gwei	1,000,000,000	10^9
+Szabo	1,000,000,000,000	10^12
+Finney	1,000,000,000,000,000	10^15
+Ether	1,000,000,000,000,000,000	10^18
+KEther	1,000,000,000,000,000,000,000	10^24
+MEther	1,000,000,000,000,000,000,000,000	10^24
+GEther	1,000,000,000,000,000,000,000,000,000	10^27
+TEther	1,000,000,000,000,000,000,000,000,000,000	10^30
