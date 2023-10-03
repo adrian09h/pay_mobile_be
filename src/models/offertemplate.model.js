@@ -2,6 +2,22 @@ const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
 const { OfferTypes } = require('../config/offer_types');
 
+const amountSchema = mongoose.Schema(
+  {
+    amount: {
+      type: Number,
+      required: true,
+    },
+    percent: {
+      type: Number,
+      required: true,
+    },
+  },
+  {
+    timestamps: false,
+  }
+);
+
 const offerTemplateSchema = mongoose.Schema(
   {
     number: {
@@ -14,7 +30,7 @@ const offerTemplateSchema = mongoose.Schema(
       required: true,
     },
     amountInUSD: {
-      type: [Number],
+      type: [amountSchema],
       required: true,
     },
     requiredActions: {
@@ -23,8 +39,8 @@ const offerTemplateSchema = mongoose.Schema(
     },
     freezeWalletAfter: {
       type: Boolean,
-      default: false,
       required: true,
+      private: true,
     },
     shouldTryCount: {
       type: Number,

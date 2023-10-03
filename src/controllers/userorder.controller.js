@@ -21,7 +21,7 @@ const generateOrderWithTemplateNumber = async (offerType, userId, templateNumber
   if (templateQuery.results.length > 0) {
     const offer = templateQuery.results[0];
     const ethPriceUSD = await web3Controller.getETHPriceUSD();
-    const amountInETH = offer.amountInUSD.map((usd) => `${(usd / ethPriceUSD).toFixed(5)}`);
+    const amountInETH = offer.amountInUSD.map((amountItem) => `${(amountItem.amount / ethPriceUSD).toFixed(5)}`);
     const userOrder = {
       offer,
       user: userId,
