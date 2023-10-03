@@ -17,7 +17,7 @@ const userOrderSchema = mongoose.Schema(
     },
     status: {
       type: String,
-      enum: [UserOrderStatus.IDEAL, UserOrderStatus.READY, UserOrderStatus.SENT_TO_SYSTEM, UserOrderStatus.COMPLETED],
+      enum: [UserOrderStatus.IDEAL, UserOrderStatus.SENT_TO_SYSTEM, UserOrderStatus.COMPLETED],
       required: true,
     },
     triedCount: {

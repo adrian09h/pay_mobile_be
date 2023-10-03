@@ -34,6 +34,17 @@ const generateOrderWithTemplateNumber = async (offerType, userId, templateNumber
   throw new ApiError(httpStatus.NOT_ACCEPTABLE, 'Not offer found.');
 };
 
+const getOrders = catchAsync(async (req, res) => {
+  const filter = pick(req.query, ['status']);
+  filter.user = req.user.id;
+  const options = {
+    sortBy: 'createdAt',
+    limit: 100,
+  };
+  const result = await userOrderService.queryUserOrder(filter, options);
+  res.send(result);
+});
+
 const getNextOrder = catchAsync(async (req, res) => {
   const filter = { user: req.user.id };
   const options = {
@@ -78,4 +89,5 @@ const getNextOrder = catchAsync(async (req, res) => {
 
 module.exports = {
   getNextOrder,
+  getOrders,
 };

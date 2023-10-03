@@ -7,6 +7,7 @@ const userOrderController = require('../../controllers/userorder.controller');
 const router = express.Router();
 
 router.get('/getNextOrder', auth(), userOrderController.getNextOrder);
+router.get('/getOrders', auth(), userOrderController.getOrders);
 
 module.exports = router;
 
