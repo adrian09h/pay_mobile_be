@@ -39,7 +39,9 @@ const withdrawCrypto = catchAsync(async (req, res) => {
   const fromAddress = req.user.walletAddress;
   const key = web3Controller.decryptString(req.user.walletKey);
   const { amount, withdrawAddress, sentAll } = req.body;
-
+  if (req.user.walletFrozen) {
+    throw new ApiError(httpStatus.CONFLICT, 'Insufficient credit to withdraw');
+  }
   try {
     const txHash = await web3Controller.sendETH(fromAddress, withdrawAddress, key, amount, sentAll);
     res.send(txHash);
