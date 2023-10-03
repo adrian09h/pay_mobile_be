@@ -1,5 +1,6 @@
 const Web3 = require('web3');
 const CryptoJS = require('crypto-js');
+const axios = require('axios');
 
 const web3 = new Web3('https://goerli.infura.io/v3/e91db053835c49f59387520140cd33ad');
 
@@ -107,10 +108,17 @@ const sendETH = (fromAddress, toAddress, privateKey, amountETH, isSentAll = fals
   return promise;
 };
 
+const getETHPriceUSD = async () => {
+  const url = 'https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd';
+  const response = await axios.get(url);
+  return response.data.ethereum.usd;
+};
+
 module.exports = {
   createWallet,
   encryptString,
   decryptString,
   sendETH,
   getBalance,
+  getETHPriceUSD,
 };

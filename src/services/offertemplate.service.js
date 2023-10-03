@@ -36,7 +36,7 @@ const getOfferTemplateById = async (id) => {
 
 /**
  * Get offerTemplate by number
- * @param {string} number
+ * @param {Numbers} number
  * @returns {Promise<OfferTemplate>}
  */
 const getOfferTemplateByNumber = async (number) => {

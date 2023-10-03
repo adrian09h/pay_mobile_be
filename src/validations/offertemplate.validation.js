@@ -5,7 +5,7 @@ const createOfferTemplate = {
   body: Joi.object().keys({
     number: Joi.number().integer().required(),
     type: Joi.string().required().custom(offerTemplateType),
-    amountInUSD: Joi.array().items(Joi.string()).required(),
+    amountInUSD: Joi.array().items(Joi.number()).required(),
     requiredActions: Joi.array().items(Joi.string()).required(),
     freezeWalletAfter: Joi.boolean().required(),
     shouldTryCount: Joi.number(),
@@ -36,7 +36,7 @@ const updateOfferTemplate = {
     .keys({
       number: Joi.number().integer(),
       type: Joi.string().custom(offerTemplateType),
-      amountInUSD: Joi.array().items(Joi.string()),
+      amountInUSD: Joi.array().items(Joi.number()),
       requiredActions: Joi.array().items(Joi.string()),
       freezeWalletAfter: Joi.boolean(),
       shouldTryCount: Joi.number(),

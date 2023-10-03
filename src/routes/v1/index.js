@@ -2,6 +2,7 @@ const express = require('express');
 const authRoute = require('./auth.route');
 const userRoute = require('./user.route');
 const offerTemplateRoute = require('./offertemplate.route');
+const userOrderRoute = require('./userorder.route');
 const docsRoute = require('./docs.route');
 const config = require('../../config/config');
 
@@ -19,6 +20,10 @@ const defaultRoutes = [
   {
     path: '/templates',
     route: offerTemplateRoute,
+  },
+  {
+    path: '/orders',
+    route: userOrderRoute,
   },
 ];
 

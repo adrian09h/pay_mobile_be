@@ -1,13 +1,11 @@
 const mongoose = require('mongoose');
-const { toJSON } = require('./plugins');
+const { toJSON, paginate } = require('./plugins');
 const { UserOrderStatus } = require('../config/user_order_status');
+const { offerTemplateSchema } = require('./offertemplate.model');
 
 const userOrderSchema = mongoose.Schema(
   {
-    offer: {
-      type: String,
-      required: true,
-    },
+    offer: offerTemplateSchema,
     user: {
       type: mongoose.SchemaTypes.ObjectId,
       ref: 'User',
@@ -34,6 +32,7 @@ const userOrderSchema = mongoose.Schema(
 
 // add plugin that converts mongoose to json
 userOrderSchema.plugin(toJSON);
+userOrderSchema.plugin(paginate);
 
 /**
  * @typedef UserOrder

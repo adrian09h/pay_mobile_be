@@ -55,4 +55,7 @@ offerTemplateSchema.statics.isNumberTaken = async function (number, excludeTempl
  */
 const OfferTemplate = mongoose.model('OfferTemplate', offerTemplateSchema);
 
-module.exports = OfferTemplate;
+module.exports = {
+  OfferTemplate,
+  offerTemplateSchema,
+};

@@ -30,23 +30,22 @@
 	// 	"from_address: "string","to_address": "string","type": "deposit, withdraw, incoming, outcoming","status": "pending, completed"
 	// },
 	"order_template": {
-		"number": "1",
+		"number": 1,
 		"type": "FOR_NORMAL, FOR_VIOLATED",
-		"amountsInUSD": [
-			"100",
-			"200"
+		"amountInUSD": [
+			100
 		],
-		"required_action": [
+		"requiredActions": [
 			"ID_VERIFY, ADDRESS_VERIFY, TRY_MULTIPLE"
 		],
-		"freezeWalletAfter": "bool",
-		"shouldTryCount": 0,
-		"nextNumber": "2"
+		"freezeWalletAfter": false,
+		"shouldTryCount": 2,
+		"nextNumber": 2
 	},
 	"user_order": {
 		"_id": "string",
 		"userId": "userId",
-		"order": {
+		"offer": {
 			"number": "1",
 			"type": "FOR_NORMAL, FOR_VIOLATED",
 			"amountsInUSD": [
@@ -69,11 +68,11 @@
 }
 
 getAvailableOrder:
-	- If there is no user_order, 
+	- If there is no user_order or last order is completed, 
 		--- if user is not violated, then get type normal order, sorting by number, then check required action completed
 		--- if user is violated IP, HD policy, then get type violated order, sorting by number,
 	- if there is user_order, then find nextNumber,
 		--- if nextNumber, then return the order chekcing requiredAction
 		
 
-updateOfferSent,
+updateOrderSent,

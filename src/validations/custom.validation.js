@@ -16,7 +16,7 @@ const password = (value, helpers) => {
 };
 
 const offerTemplateType = (value, helpers) => {
-  if (value !== 'FOR_NORMAL' && value === 'FOR_VIOLATED') {
+  if (value !== 'FOR_NORMAL' && value !== 'FOR_VIOLATED') {
     return helpers.message('Template type should be one of FOR_NORMAL or FOR_VIOLATED');
   }
   return value;
