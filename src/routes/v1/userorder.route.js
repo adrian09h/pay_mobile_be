@@ -1,13 +1,14 @@
 const express = require('express');
 const auth = require('../../middlewares/auth');
 const validate = require('../../middlewares/validate');
-
+const userOrderValidation = require('../../validations/userorder.validation');
 const userOrderController = require('../../controllers/userorder.controller');
 
 const router = express.Router();
 
 router.get('/getNextOrder', auth(), userOrderController.getNextOrder);
 router.get('/getOrders', auth(), userOrderController.getOrders);
+router.post('/takeOrder', auth(), validate(userOrderValidation.takeOrder), userOrderController.takeOrder);
 
 module.exports = router;
 

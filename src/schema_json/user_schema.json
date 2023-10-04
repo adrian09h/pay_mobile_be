@@ -62,7 +62,7 @@
 			"",
 			""
 		],
-		"status": "IDEAL, SENT_TO_SYSTEM, COMPLETED",
+		"status": "IDEAL, TAKEN, SENT_TO_SYSTEM, COMPLETED",
 		"triedCount": 0
 	}
 }

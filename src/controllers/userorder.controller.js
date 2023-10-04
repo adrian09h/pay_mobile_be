@@ -78,16 +78,31 @@ const getNextOrder = catchAsync(async (req, res) => {
           res.send(newOrder);
         }
       } else {
-        throw new ApiError(httpStatus.CONFLICT, 'Current order is not completed.');
+        throw new ApiError(httpStatus.CONFLICT, 'Current order is not completed');
       }
     }
   }
 });
-// const template = await userOrderService.createUserOrder(req.body);
-// res.status(httpStatus.CREATED).send(existingOrders);
-// throw new ApiError(httpStatus.NOT_FOUND, 'Order not found');
+
+const takeOrder = catchAsync(async (req, res) => {
+  const existingOrder = await userOrderService.getUserOrderById(req.body.orderId);
+  if (!existingOrder) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Order not found');
+  }
+  const userId = req.user.id;
+  if (userId !== `${existingOrder.user}`) {
+    throw new ApiError(httpStatus.FORBIDDEN, 'Unautorised data owner');
+  }
+  if (existingOrder.status !== UserOrderStatus.IDEAL) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, 'Order is already taken');
+  }
+  existingOrder.status = UserOrderStatus.TAKEN;
+  const updatedOrder = await userOrderService.updateUserOderById(req.body.orderId, existingOrder);
+  res.send(updatedOrder);
+});
 
 module.exports = {
   getNextOrder,
   getOrders,
+  takeOrder,
 };

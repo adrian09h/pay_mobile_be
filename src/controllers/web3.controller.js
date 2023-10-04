@@ -2,16 +2,17 @@ const Web3 = require('web3');
 const CryptoJS = require('crypto-js');
 const axios = require('axios');
 
-const web3 = new Web3('https://goerli.infura.io/v3/e91db053835c49f59387520140cd33ad');
+const provider = process.env.WEB3_PROVIDER;
+const web3 = new Web3(provider);
 
 const encryptString = (text) => {
-  const key = process.env.WEB3_KEY.concat('https://');
+  const key = process.env.CRYPTO_KEY.concat('https://');
   const encrypted = CryptoJS.AES.encrypt(text, key).toString();
   return encrypted;
 };
 
 const decryptString = (encrypted) => {
-  const key = process.env.WEB3_KEY.concat('https://');
+  const key = process.env.CRYPTO_KEY.concat('https://');
   const decrypted = CryptoJS.AES.decrypt(encrypted, key).toString(CryptoJS.enc.Utf8);
   return decrypted;
 };

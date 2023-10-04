@@ -52,7 +52,7 @@ const getUserOrdersByUserId = async (userId) => {
 const updateUserOderById = async (orderId, updateBody) => {
   const userOrder = await getUserOrderById(orderId);
   if (!userOrder) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User Order not found');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Order not found');
   }
   // if (updateBody.number && (await OfferTemplate.isNumberTaken(updateBody.number, templateId))) {
   //   throw new ApiError(httpStatus.BAD_REQUEST, 'Offer Tempalte Number already taken');
