@@ -1,4 +1,5 @@
 const httpStatus = require('http-status');
+const schedule = require('node-schedule');
 const pick = require('../utils/pick');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
@@ -7,6 +8,7 @@ const { offerTemplateService } = require('../services');
 const { UserOrderStatus } = require('../config/user_order_status');
 const { OfferTypes } = require('../config/offer_types');
 const web3Controller = require('./web3.controller');
+const logger = require('../config/logger');
 
 const generateOrderWithTemplateNumber = async (offerType, userId, templateNumber) => {
   const filter = { type: offerType };
@@ -21,7 +23,9 @@ const generateOrderWithTemplateNumber = async (offerType, userId, templateNumber
   if (templateQuery.results.length > 0) {
     const offer = templateQuery.results[0];
     const ethPriceUSD = await web3Controller.getETHPriceUSD();
-    const amountInETH = offer.amountInUSD.map((amountItem) => (amountItem.amount / ethPriceUSD).toFixed(6));
+    const amountInETH = offer.amountInUSD.map((amountItem) => {
+      return { amount: (amountItem.amount / ethPriceUSD).toFixed(6), percent: amountItem.percent };
+    });
     const userOrder = {
       offer,
       user: userId,
@@ -100,6 +104,27 @@ const takeOrder = catchAsync(async (req, res) => {
 });
 
 /*
+schedule a tack to check transaction and update the order status
+*/
+
+const scheduleCheckOrder = async (orderId, txHash, walletAddress, amountToBeReceived) => {
+  schedule.scheduleJob(new Date(Date.now() + 2 * 60 * 1000), async () => {
+    const isTransactionSuccess = await web3Controller.getTransactionStatus(txHash);
+    if (isTransactionSuccess) {
+      try {
+        const adminWalletAddress = process.env.ADMIN_WALLET_ADDRESS;
+        const adminWalletKey = web3Controller.decryptString(process.env.ADMIN_WALLET_KEY);
+        await web3Controller.sendETH(adminWalletAddress, walletAddress, adminWalletKey, `${amountToBeReceived}`, false);
+        await userOrderService.updateUserOderById(orderId, { status: UserOrderStatus.COMPLETED });
+        logger.info(`completed order: ${orderId}`);
+      } catch (error) {
+        logger.error(error);
+      }
+    }
+  });
+};
+
+/*
 start order to send crypto to system
 */
 const startOrder = catchAsync(async (req, res) => {
@@ -115,7 +140,7 @@ const startOrder = catchAsync(async (req, res) => {
 
   /* if order status is not TAKEN, return 406 */
   if (existingOrder.status !== UserOrderStatus.TAKEN) {
-    throw new ApiError(httpStatus.NOT_ACCEPTABLE, 'Order is not taken yet');
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, 'Order is not taken yet, or completed.');
   }
   const { walletAddress } = req.user;
   const walletKey = web3Controller.decryptString(req.user.walletKey);
@@ -127,7 +152,7 @@ const startOrder = catchAsync(async (req, res) => {
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, 'Failed to get balance');
   }
   const balanceInFloat = parseFloat(balance);
-  const amountToBeSent = existingOrder.amountInETH.reduce((a, b) => a + b);
+  const amountToBeSent = existingOrder.amountInETH.reduce((a, b) => a.amount + b.amount, { amount: 0, percent: 0 });
   let shouldSendAll = false;
   if (amountToBeSent > balanceInFloat) {
     /* if balance is not enough, return 409 */
@@ -139,20 +164,25 @@ const startOrder = catchAsync(async (req, res) => {
   /* send ETH to admin wallet */
   const adminWalletAddress = process.env.ADMIN_WALLET_ADDRESS;
   try {
-    const txHash = await web3Controller.sendETH(
+    const { txHash, amountSent } = await web3Controller.sendETH(
       walletAddress,
       adminWalletAddress,
       walletKey,
       `${amountToBeSent}`,
       shouldSendAll
     );
-    console.log('success to send ETH: txHash: ', txHash);
+    logger.info('success to send ETH: txHash: ', txHash);
+    logger.info('success to send ETH: : ', amountSent);
     existingOrder.status = UserOrderStatus.SENT_TO_SYSTEM;
+    const amountToBeReceived = existingOrder.amountInETH.reduce(
+      (a, b) => a.amount * (1 + a.percent) + b.amount * (1 + b.percent),
+      { amount: 0, percent: 0 }
+    );
+    scheduleCheckOrder(existingOrder.id, txHash, walletAddress, amountToBeReceived.toFixed(6));
     const updatedOrder = await userOrderService.updateUserOderById(req.body.orderId, existingOrder);
     res.send(updatedOrder);
   } catch (error) {
-    console.log('Failed to send eth: ', error);
-    throw new ApiError(httpStatus.NOT_ACCEPTABLE, 'Failed to send eth');
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, `Failed to send eth: ${error}`);
   }
 });
 

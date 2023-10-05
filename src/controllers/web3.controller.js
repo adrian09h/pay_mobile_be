@@ -88,10 +88,11 @@ const sendETH = (fromAddress, toAddress, privateKey, amountETH, isSentAll = fals
           .then((signedTx) => {
             // Send the transaction
             // console.log('signedTx: ', signedTx);
-            web3.eth.sendSignedTransaction(signedTx.rawTransaction, function (error, hash) {
+            web3.eth.sendSignedTransaction(signedTx.rawTransaction, function (error, txHash) {
               if (!error) {
                 // console.log('Transaction hash: ', hash);
-                resolve(hash);
+                const amountSent = web3.utils.fromWei(web3.utils.hexToNumber(tx.value).toString(), 'ether');
+                resolve({ txHash, amountSent });
               } else {
                 // console.log('Error: ', error);
                 reject(error);
@@ -116,6 +117,17 @@ const getETHPriceUSD = async () => {
   return response.data.ethereum.usd;
 };
 
+const getTransactionStatus = async (txHash) => {
+  const result = await web3.eth.getTransactionReceipt(txHash);
+  if (result) {
+    if (result.status) {
+      return true;
+    }
+    return false;
+  }
+  return false;
+};
+
 module.exports = {
   createWallet,
   encryptString,
@@ -123,4 +135,5 @@ module.exports = {
   sendETH,
   getBalance,
   getETHPriceUSD,
+  getTransactionStatus,
 };

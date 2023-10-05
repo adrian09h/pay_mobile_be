@@ -3,6 +3,22 @@ const { toJSON, paginate } = require('./plugins');
 const { UserOrderStatus } = require('../config/user_order_status');
 const { offerTemplateSchema } = require('./offertemplate.model');
 
+const amountSchema = mongoose.Schema(
+  {
+    amount: {
+      type: Number,
+      required: true,
+    },
+    percent: {
+      type: Number,
+      required: true,
+    },
+  },
+  {
+    timestamps: false,
+  }
+);
+
 const userOrderSchema = mongoose.Schema(
   {
     offer: offerTemplateSchema,
@@ -12,7 +28,7 @@ const userOrderSchema = mongoose.Schema(
       required: true,
     },
     amountInETH: {
-      type: [Number],
+      type: [amountSchema],
       required: true,
     },
     status: {
