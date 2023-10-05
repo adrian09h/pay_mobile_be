@@ -43,7 +43,16 @@ const withdrawCrypto = catchAsync(async (req, res) => {
     throw new ApiError(httpStatus.CONFLICT, 'Insufficient credit to withdraw');
   }
   try {
-    const txHash = await web3Controller.sendETH(fromAddress, withdrawAddress, key, amount, sentAll);
+    const balance = await web3Controller.getBalance(fromAddress);
+    const balanceInFloat = parseFloat(balance);
+    let shouldSendAll = sentAll;
+    if (amount > balanceInFloat) {
+      /* if balance is not enough, return 409 */
+      throw new ApiError(httpStatus.CONFLICT, 'No enough balance');
+    } else if (amount === balanceInFloat) {
+      shouldSendAll = true;
+    }
+    const txHash = await web3Controller.sendETH(fromAddress, withdrawAddress, key, `${amount.toFixed(10)}`, shouldSendAll);
     res.send({ success: true, txHash });
   } catch (error) {
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, error.message);

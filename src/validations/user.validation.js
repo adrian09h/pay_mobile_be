@@ -48,7 +48,7 @@ const deleteUser = {
 const withdrawCrypto = {
   body: Joi.object().keys({
     withdrawAddress: Joi.string().required(),
-    amount: Joi.string().required(),
+    amount: Joi.number().required(),
     sentAll: Joi.bool().required(),
   }),
 };
