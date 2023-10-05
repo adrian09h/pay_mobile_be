@@ -12,7 +12,7 @@ const userOrderSchema = mongoose.Schema(
       required: true,
     },
     amountInETH: {
-      type: [String],
+      type: [Number],
       required: true,
     },
     status: {

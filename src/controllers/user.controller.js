@@ -44,7 +44,7 @@ const withdrawCrypto = catchAsync(async (req, res) => {
   }
   try {
     const txHash = await web3Controller.sendETH(fromAddress, withdrawAddress, key, amount, sentAll);
-    res.send(txHash);
+    res.send({ success: true, txHash });
   } catch (error) {
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, error.message);
   }

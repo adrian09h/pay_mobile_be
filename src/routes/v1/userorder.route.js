@@ -9,6 +9,7 @@ const router = express.Router();
 router.get('/getNextOrder', auth(), userOrderController.getNextOrder);
 router.get('/getOrders', auth(), userOrderController.getOrders);
 router.post('/takeOrder', auth(), validate(userOrderValidation.takeOrder), userOrderController.takeOrder);
+router.post('/startOrder', auth(), validate(userOrderValidation.startOrder), userOrderController.startOrder);
 
 module.exports = router;
 

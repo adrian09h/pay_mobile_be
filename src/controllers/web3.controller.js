@@ -30,7 +30,8 @@ const getBalance = (address) => {
     web3.eth
       .getBalance(address)
       .then((result) => {
-        resolve(result);
+        const amountInETH = web3.utils.fromWei(result, 'ether');
+        resolve(amountInETH);
       })
       .catch((error) => {
         reject(error);
