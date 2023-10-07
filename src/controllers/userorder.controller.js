@@ -6,6 +6,7 @@ const catchAsync = require('../utils/catchAsync');
 const { userOrderService } = require('../services');
 const { offerTemplateService } = require('../services');
 const { UserOrderStatus } = require('../config/user_order_status');
+const { OfferRequiredActions } = require('../config/offer_required_actions');
 const { OfferTypes } = require('../config/offer_types');
 const web3Controller = require('./web3.controller');
 const logger = require('../config/logger');
@@ -91,12 +92,27 @@ const takeOrder = catchAsync(async (req, res) => {
   if (!existingOrder) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Order not found');
   }
-  const userId = req.user.id;
-  if (userId !== `${existingOrder.user}`) {
+  const { user } = req;
+  if (user.id !== `${existingOrder.user}`) {
     throw new ApiError(httpStatus.FORBIDDEN, 'Unautorised data owner');
   }
   if (existingOrder.status !== UserOrderStatus.IDEAL) {
     throw new ApiError(httpStatus.NOT_ACCEPTABLE, 'Order is already taken');
+  }
+
+  if (existingOrder.offer.requiredActions.length > 0) {
+    existingOrder.offer.requiredActions.forEach((action) => {
+      if (action === OfferRequiredActions.ID_VERIFY) {
+        if (!user.isIDVerified) {
+          throw new ApiError(httpStatus.NOT_ACCEPTABLE, 'ID is not verified');
+        }
+      }
+      if (action === OfferRequiredActions.ADDRESS_VERIFY) {
+        if (!user.isAddressVerified) {
+          throw new ApiError(httpStatus.NOT_ACCEPTABLE, 'Address is not verified');
+        }
+      }
+    });
   }
   existingOrder.status = UserOrderStatus.TAKEN;
   const updatedOrder = await userOrderService.updateUserOderById(req.body.orderId, existingOrder);
